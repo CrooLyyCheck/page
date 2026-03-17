@@ -1,0 +1,69 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_CMS_URL: ${VITE_CMS_URL:-http://localhost:1337}
+    image: ghcr.io/croolyycheck/page:latest
+    depends_on:
+      cms:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  cms:
+    build:
+      context: ./cms
+      dockerfile: Dockerfile
+    image: ghcr.io/croolyycheck/page/strapi:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${POSTGRES_DB:-page}
+      DATABASE_USERNAME: ${POSTGRES_USER:-page}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-page}
+      DATABASE_SSL: "false"
+      APP_KEYS: ${APP_KEYS}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      JWT_SECRET: ${JWT_SECRET}
+      HOST: 0.0.0.0
+      PORT: 1337
+    ports:
+      - "1337:1337"
+    volumes:
+      - strapi_uploads:/opt/app/public/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:1337/admin || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-page}
+      POSTGRES_USER: ${POSTGRES_USER:-page}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-page}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-page} -d ${POSTGRES_DB:-page}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  strapi_uploads:

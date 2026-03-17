@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+
+cms/.cache/
+cms/.tmp/
+cms/build/
+cms/dist/
+cms/node_modules/
+cms/.env
+
+uploads/

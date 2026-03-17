@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_sections_content_blocks",
+  "info": {
+    "displayName": "Content block"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "richtext"
+    }
+  }
+}

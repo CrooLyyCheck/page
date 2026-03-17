@@ -1,0 +1,22 @@
+{
+  "name": "page-cms",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build"
+  },
+  "dependencies": {
+    "@strapi/plugin-cloud": "^5.13.0",
+    "@strapi/strapi": "^5.13.0",
+    "pg": "^8.13.3"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=22.x.x",
+    "npm": ">=8.0.0"
+  },
+  "strapi": {
+    "uuid": "a8b64cf8-9f74-4a8f-b5f5-1b89f422b2f2"
+  }
+}
